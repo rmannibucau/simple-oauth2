@@ -151,4 +151,33 @@ public class JPAOAuthDataProvider extends AbstractOAuthDataProvider {
         serverAccessToken.setIssuer(tokenEntity.getIssuer());
         return serverAccessToken;
     }
+    
+    @Override
+	protected ServerAccessToken doCreateAccessToken(AccessTokenRegistration atReg) {
+		ServerAccessToken at = createNewAccessToken(atReg.getClient(), atReg.getSubject());
+		at.setAudiences(atReg.getAudiences());
+		at.setGrantType(atReg.getGrantType());
+		List<String> theScopes = atReg.getApprovedScope();
+		List<OAuthPermission> thePermissions = convertScopeToPermissions(atReg.getClient(), theScopes);
+		at.setScopes(thePermissions);
+		at.setSubject(atReg.getSubject());
+		at.setClientCodeVerifier(atReg.getClientCodeVerifier());
+		at.setNonce(atReg.getNonce());
+		at.setResponseType(atReg.getResponseType());
+		at.setGrantCode(atReg.getGrantCode());
+		at.getExtraProperties().putAll(atReg.getExtraProperties());
+
+		// add roles
+		List<String> roles = atReg.getSubject().getRoles();
+		String rolesString = roles.stream().collect(Collectors.joining(","));
+		at.getParameters().put("roles", rolesString);
+
+		if (isUseJwtFormatForAccessTokens()) {
+			JwtClaims claims = createJwtAccessToken(at);
+			String jose = processJwtAccessToken(claims);
+			at.setTokenKey(jose);
+		}
+
+		return at;
+	}
 }

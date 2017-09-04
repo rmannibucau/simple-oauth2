@@ -133,6 +133,11 @@ public class JPAOAuthDataProvider extends AbstractOAuthDataProvider {
         entity.setExpiresIn(serverToken.getExpiresIn());
         entity.setIssuedAt(serverToken.getIssuedAt());
         entity.setIssuer(serverToken.getIssuer());
+        
+        // this works and stores roles comma separated
+        List<String> roles = serverToken.getSubject().getRoles();
+		entity.setRoles(roles.stream().collect(Collectors.joining(",")));
+        
         return entity;
     }
 
@@ -149,6 +154,16 @@ public class JPAOAuthDataProvider extends AbstractOAuthDataProvider {
         serverAccessToken.setExpiresIn(tokenEntity.getExpiresIn());
         serverAccessToken.setIssuedAt(tokenEntity.getIssuedAt());
         serverAccessToken.setIssuer(tokenEntity.getIssuer());
+        
+        // why is this never visible on the bearer token?
+        // there is a parameter section
+        if (tokenEntity.getRoles() != null) {
+			Map<String, String> parameters = new HashMap<>();
+			parameters.put("roles", tokenEntity.getRoles());
+			serverAccessToken.setParameters(parameters);
+			System.out.println("ADDED ROLES");
+		}
+        
         return serverAccessToken;
     }
 }

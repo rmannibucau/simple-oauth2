@@ -50,7 +50,7 @@ public class OAuth2Test {
         // refresh the token
         final ClientAccessToken refreshedToken = request.post(Entity.entity(new Form()
                         .param(OAuthConstants.REFRESH_TOKEN, token.getRefreshToken())
-                        .param(OAuthConstants.RESOURCE_OWNER_PASSWORD, "pwd")
+                        // .param(OAuthConstants.RESOURCE_OWNER_PASSWORD, "pwd")
                         .param(OAuthConstants.CLIENT_ID, App.CLIENT_ID)
                         .param(OAuthConstants.CLIENT_SECRET, App.CLIENT_SECRET)
                         .param(OAuthConstants.GRANT_TYPE, OAuthConstants.REFRESH_TOKEN_GRANT), MediaType.APPLICATION_FORM_URLENCODED_TYPE),

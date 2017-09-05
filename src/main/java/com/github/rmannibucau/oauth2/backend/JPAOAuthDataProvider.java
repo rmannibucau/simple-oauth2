@@ -135,6 +135,7 @@ public class JPAOAuthDataProvider extends AbstractOAuthDataProvider {
         entity.setIssuer(serverToken.getIssuer());
         
         // this works and stores roles comma separated
+	// but causes refresh token invalid_grant
         List<String> roles = serverToken.getSubject().getRoles();
 	entity.setRoles(roles.stream().collect(Collectors.joining(",")));
         
@@ -155,8 +156,7 @@ public class JPAOAuthDataProvider extends AbstractOAuthDataProvider {
         serverAccessToken.setIssuedAt(tokenEntity.getIssuedAt());
         serverAccessToken.setIssuer(tokenEntity.getIssuer());
         
-        // why is this never visible on the bearer token?
-        // there is a parameter section
+        // causes refresh token invalid_grant
         if (tokenEntity.getRoles() != null) {
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put("roles", tokenEntity.getRoles());

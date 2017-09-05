@@ -7,6 +7,7 @@ import org.apache.cxf.rs.security.oauth2.common.Client;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Lob;
 
 @Getter
 @Setter
@@ -28,4 +29,7 @@ public class TokenEntity {
     private String nonce;
     private String responseType;
     private String grantCode;
+    
+    @Lob
+    private String roles;
 }
